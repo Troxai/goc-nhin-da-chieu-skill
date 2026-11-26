@@ -1,8 +1,10 @@
-# Ảnh minh hoạ bằng Muse (muse.ai)
+# Ảnh minh hoạ bằng Google Flow
 
-Script: `node scripts/muse_generate.mjs prompts.json runs/.../images` (Chrome profile `~/.config/chrome-muse` đã đăng nhập, màn hình :99). Gửi tất cả prompt cùng lúc, mỗi prompt 1 chat → `<id>_0.jpg` 1152×2048, ~1 phút cả bộ. Tự thêm "Tạo ảnh · tỷ lệ 9:16 dọc" ở đầu và "không chữ, không logo, không watermark" ở cuối (trừ prompt có `"raw": true`). Cuối lượt in `QUOTA used x%` (gói Free theo tuần; hết thì trừ credit nạp thêm). Exit 3 = cần đăng nhập lại; exit 2 = có ảnh thiếu.
+Script: `node scripts/flow_generate.mjs prompts.json runs/.../images` (Chrome profile trong `config/env` → `CHROME_PROFILE`/`FLOW_PROFILE`, đăng nhập 1 lần bằng `node scripts/flow_login.mjs`). Prompt TIẾNG ANH. Chạy song song 3 prompt (`FLOW_CONC`, tối đa 4), mỗi prompt ra 2 ảnh `<id>_0.jpg`, `<id>_1.jpg`, ~10–15 giây/prompt. Tỉ lệ mặc định 9:16 (`FLOW_RATIO`). Không chạy 2 lệnh flow cùng lúc.
+Mã thoát: 0 = xong; 2 / `FLOW_NO_RESULT` = thiếu ảnh → chạy lại cùng lệnh (tối đa 2 lần, tự bỏ qua ảnh đã có); 3 / `FLOW_LOGIN_REQUIRED` = cần đăng nhập lại (`flow_login.mjs`); 4 = giao diện Flow đổi (xem `_flow_error.png`); 5 = chờ khoá Flow quá lâu.
+Ảnh Flow có logo ✦ nhỏ góc dưới phải: tách nền + crop sát chủ thể (`chroma_key.py`) sẽ loại nó; kiểm bằng mắt, còn thì crop thêm.
 
-## Prompt (tiếng Việt hoặc Anh, luôn kèm khung chung)
+## Prompt (tiếng Anh, luôn kèm khung chung)
 Khung chung: `Vertical 9:16 cinematic editorial documentary photograph, 35mm lens, natural realism, subtle film grain. No readable text, no letters, no numbers, no logos, no signage, no watermark.`
 
 - **Cutout (dùng nhiều nhất)**: `Only the main subject: <người/vật>, <hành động>, full body/full object visible. Isolated on a plain flat pure chroma green background (#00FF00), no environment, no floor shadow, no text, no logo.`
@@ -14,7 +16,8 @@ Khung chung: `Vertical 9:16 cinematic editorial documentary photograph, 35mm len
 
 ## Thư viện
 Ảnh tốt sau khi tách nền → copy vào `template/public/library/` và thêm vào `library.json` (`file`, `tags`, `kind: person|building|object`).
-Mỗi video tạo mới 8–12 ảnh cutout đúng câu từng trạm; không dùng lại ảnh nhân vật cũ. Thư viện chỉ cho logo kênh hoặc khi Muse lỗi.
+Mỗi video tạo mới 8–12 ảnh cutout đúng câu từng trạm; không dùng lại ảnh nhân vật cũ. Thư viện chỉ cho logo kênh hoặc khi Flow lỗi.
 
-## Khi Muse lỗi
-Exit 3 (hết phiên) → báo Telegram "Muse cần đăng nhập lại" (anh đăng nhập qua VNC :99, profile chrome-muse). Muse đổi giao diện (`not_ready`, SEND_FAIL hàng loạt) → không thử quá 2 lần, dùng ảnh thư viện, báo Telegram. Phần nói chuyện với Muse nằm ở `scripts/vendor/muse-page.cjs` (lấy từ CodeMuseTool).
+
+## Khi Flow lỗi
+Exit 3 → báo người dùng "Flow cần đăng nhập lại" (`node scripts/flow_login.mjs`). Exit 4 hoặc Flow từ chối hàng loạt (hết lượt, bị giới hạn tạm thời) → không thử quá 2 lần, dùng ảnh thư viện, ghi log và báo người dùng.
