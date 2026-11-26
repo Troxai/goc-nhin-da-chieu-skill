@@ -1,0 +1,57 @@
+name: Góc nhìn đa chiều
+slug: goc-nhin-da-chieu
+language: vi
+topics: [vàng, bitcoin, lãi suất ngân hàng, đại gia và tài sản lớn, bất động sản, chứng khoán, vĩ mô]
+publish_time: "17:30"   # giờ đăng mặc định (+07), anh chốt 2026-11-08 theo gợi ý YouTube: đăng trước đợt xem 18–21h. Thêm video thứ 2 → 10:30. Lên lịch: scripts/publish_at.sh <run> "<ngày> 17:30 +07"
+
+# Ưu tiên chủ đề (cập nhật 2026-11-05 theo số liệu 100 video Facebook gần nhất:
+# median view — bitcoin 23.685, vàng 7.463, đại gia 3.278, chứng khoán 462, lãi suất/vĩ mô 264, BĐS 244; toàn trang 287).
+# Điểm cuối = điểm tin (0–10) × weight. Cùng điểm → chọn chủ đề có weight cao hơn.
+topic_weights:
+  vàng: 2.0
+  bitcoin: 2.0
+  lãi suất ngân hàng: 1.5
+  đại gia và tài sản lớn: 1.5
+  bất động sản: 1.0        # chỉ chọn khi có con số gây chú ý: tồn kho, giá, lừa đảo, quy hoạch lớn
+  vĩ mô: 1.0
+  chứng khoán: 0.7         # chỉ chọn khi biến động lớn (VN-Index ±2%/phiên, khối ngoại bán/mua ròng kỷ lục)
+
+# Phân bổ trong 7 ngày gần nhất (đếm theo runs/*/*/brief.json):
+weekly_mix:
+  vàng_hoặc_bitcoin: {min: 3, max: 4}
+  khác: {min: 3}            # lãi suất, đại gia, BĐS, vĩ mô, chứng khoán
+
+# Chống lặp: với vàng và bitcoin, lặp CHỦ ĐỀ được nhưng KHÔNG lặp GÓC NHÌN trong 14 ngày.
+# Ví dụ góc: giá SJC vs thế giới; ai đang gom vàng (NHTW, quỹ, đại gia tiền số); có nên bán ở vùng đỉnh;
+# chênh lệch mua-bán; vàng vs bitcoin vs gửi tiết kiệm; dòng tiền ETF; tác động của Fed/USD.
+avoid_repeat_days: 14
+avoid_repeat_scope: {vàng: angle, bitcoin: angle, default: topic}
+
+accent: {stocks: "#f28a1e", realestate: "#c4502f", macro: "#48d597", gold: "#e3b341", crypto: "#f7931a"}
+sources:
+  # trong nước
+  - https://cafef.vn/thi-truong-chung-khoan.chn
+  - https://cafef.vn/bat-dong-san.chn
+  - https://cafef.vn/tai-chinh-quoc-te.chn
+  - https://vneconomy.vn/chung-khoan.htm
+  - https://vnexpress.net/kinh-doanh
+  - https://mekongasean.vn/
+  - https://vietstock.vn/
+  # vàng
+  - https://sjc.com.vn/
+  - https://www.pnj.com.vn/blog/gia-vang/
+  - https://www.kitco.com/news/
+  # bitcoin / crypto
+  - https://www.coingecko.com/en/coins/bitcoin
+  - https://www.coindesk.com/markets/
+  # quốc tế (vàng, bitcoin, Fed, USD)
+  - https://www.reuters.com/markets/
+voice: {engine: vieneu, voice: "Thanh Bình", style: doc_truyen}
+video: {length_target_s: 170, max_s: 178, fps: 30, size: [1080, 1920]}
+platforms:
+  youtube: {enabled: true, privacy: public}
+  facebook: {enabled: true}
+  tiktok: {enabled: true, ai_label: false}   # anh yêu cầu 2026-11-06: không gắn nhãn AI (nhãn AI làm giảm view)
+auto_publish: false        # false = gửi bản xem trước, chờ duyệt (trả lời OK) rồi mới đăng; true = tự đăng sau khi QC đạt
+disclaimer: "Không phải khuyến nghị đầu tư."
+# Vàng/bitcoin: không nói "nên mua/bán", không dự báo giá mục tiêu, không gợi ý sàn/coin cụ thể.

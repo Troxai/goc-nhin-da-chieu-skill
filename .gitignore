@@ -1,0 +1,8 @@
+secrets/
+*.env
+!*.env.example
+*token*.json
+node_modules/
+__pycache__/
+out/
+.DS_Store
